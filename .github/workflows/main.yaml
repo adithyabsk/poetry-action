@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: 0 12 * * 6 # Weekly at Saturdays at Noon
+
+jobs:
+  default-version:
+    name: Setup default version
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+        python: [^3.5, ^3.6, ^3.7, ^3.8]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Get Sample pyproject.toml
+      run: curl -L https://gist.githubusercontent.com/adithyabsk/8926f8331cb5fc33c43e965dc7adc5df/raw/pyproject.toml
+    - id: Install poetry
+      uses: adithyabsk/poetry-action@master
+      with:
+        python-version: ${{ matrix.python }}
